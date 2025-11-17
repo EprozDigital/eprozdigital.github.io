@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <style>
+        /* Default styling - applies to all screens */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+        }
+
+        header {
+            background: #0057d9;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* ---------- MOBILE / ANDROID VIEW ---------- */
+        @media only screen and (max-width: 600px) {
+            header {
+                font-size: 20px;
+                padding: 15px;
+            }
+
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+
+        /* ---------- PC / DESKTOP VIEW ---------- */
+        @media only screen and (min-width: 601px) {
+            header {
+                font-size: 32px;
+            }
+
+            .container {
+                max-width: 900px;
+            }
+
+            p {
+                font-size: 18px;
+            }
+        }
+    </style>
+    
+    <title>EprozDigital</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <!--hero section start-->
+
+   <div class="hero">
+     <nav>
+        <h2 class="logo">Epro<span>Digital</span></h2>
+        <ul>
+            <li><a href="">Home</a></li>
+            <li><a href="">About Us</a></li>
+            <li><a href="">Services</a></li>
+            <li><a href="">Skills</a></li>
+            <li><a href="">Contact us</a></li>
+        </ul>
+        <a href="#" class="btn">Subscribe</a>
+     </nav>
+
+        <div class="content">
+          <h4>Hello, my name is</h4>
+          <h1>Elijah <span>Kanyi</span></h1>
+          <h3>I am a Digital Marketer.</h3>
+            <div class="newsletter">
+              <form action="#">
+                <input type="email" name="email" id="mail" placeholder="Enter Your Email">
+                <input type="submit" name="submit" value="Let's Start">
+              </form>
+            </div>
+        </div>
+    </div>
+
+<!--About section start-->
+<section class="about">
+    <div class="main">
+        <img src="IMAGES/me.jpg" alt="">
+        <div class="about-text">
+            <h2>About Me</h2>
+            <h5>Developer <span>and Designer</span></h5>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero veniam tempore perferendis error et omnis animi nam illo blanditiis, velit molestiae dolores quo sunt corporis reiciendis, nihil excepturi dicta iste? Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum rerum placeat voluptates praesentium temporibus exercitationem sit aliquid non aperiam, dolor et molestias quisquam odit possimus. Explicabo exercitationem soluta corrupti eligendi.</p>
+            <button type="button"> Let's Talk</button>
+
+        </div>
+    </div>
+</section>
+
+ <!--services section start-->  
+
+<div class="service">
+    <div class="title">
+        <h2>Our Services</h2>
+    </div>
+
+
+    <div class="box">
+        <div class="card">
+            <img src="IMAGES/GIBBS final.png" alt="">
+            <h5>Web development</h5>
+            <div class="pra">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere omnis officia facilis minus deleniti error sapiente, fugiat hic magni....</p> 
+
+            <p style="text-align: center;">
+                <a class="button" href="#">Read More</a>
+            </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="IMAGES/GIBBS final.png" alt="">
+            <h5>Web development</h5>
+            <div class="pra">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere omnis officia facilis minus deleniti error sapiente, fugiat hic magni....</p> 
+
+            <p style="text-align: center;">
+                <a class="button" href="#">Read More</a>
+            </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="IMAGES/GIBBS final.png" alt="">
+            <h5>Web development</h5>
+            <div class="pra">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere omnis officia facilis minus deleniti error sapiente, fugiat hic magni....</p> 
+
+            <p style="text-align: center;">
+                <a class="button" href="#">Read More</a>
+            </p>
+            </div>
+        </div>
+    </div> 
+</div>
+
+
+<!--Contact me-->
+
+<div class="contact-me">
+    <p>Let me get you a beautiful LinkedIn Profile, Resume, Cover Letter....</p>
+    <a href="" class="button-two">Hire me</a>
+
+</div>
+
+<!--footer start-->
+
+<footer>
+    <p>Elijah Kanyi</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima, rem quisquam dolor suscipit laborum praesentium fugiat odit porro architecto necessitatibus aperiam </p>
+
+    <div class="social">
+        <a href="">icon</a>
+        <a href="">icon</a>
+        <a href="">icon</a>
+    </div>
+
+    <p class="end">CopyRight by Elijah Kanyi</p>
+</footer>
+    
+</body>
+</html>
+
+
+
