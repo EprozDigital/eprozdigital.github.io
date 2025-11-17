@@ -8,7 +8,7 @@
 .hero{
     height: 100vh;
     width: 100%;
-    background-image: url(IMAGES/WEBBACKGROUND.png);
+    background-image: url(WEBBACKGROUND.png);
     background-size: cover;
     background-position: center;
 }
@@ -362,3 +362,4 @@ footer p:nth-child(2){
        width:100%
     }
 }
+
