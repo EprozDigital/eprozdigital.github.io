@@ -1,70 +1,1350 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>EPROZ DIGITAL</title>
-        <meta name="viewport" content="width=device-width" initial-scale="1.0">
-        <link rel="stylesheet" href="style.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Inventory Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            padding: 0.875rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #eff6ff;
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon.blue { background: #dbeafe; color: var(--primary); }
+        .stat-icon.green { background: #d1fae5; color: var(--success); }
+        .stat-icon.orange { background: #fef3c7; color: var(--warning); }
+        .stat-icon.red { background: #fee2e2; color: var(--danger); }
+
+        .stat-value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #f8fafc;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            padding-left: 2.5rem;
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: var(--text-light);
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal {
+                margin: 0.5rem;
+                max-height: 95vh;
+            }
+        }
+
+        /* Utility Classes */
+        .text-right { text-align: right; }
+        .mb-0 { margin-bottom: 0; }
+        .mt-4 { margin-top: 1rem; }
+        .hidden { display: none; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Loading State */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
     
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">⚡ HardwarePro</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" onclick="showTab('dashboard')">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('inventory')">
+                    <span>📦</span> Inventory
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('procurement')">
+                    <span>🛒</span> Procurement
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('sales')">
+                    <span>💰</span> Sales
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('suppliers')">
+                    <span>🏢</span> Suppliers
+                </a>
+                <a href="#" class="nav-item" onclick="showTab('reports')">
+                    <span>📈</span> Reports
+                </a>
+            </nav>
+        </aside>
 
-	
-	</head>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+                        <button class="btn btn-primary" onclick="openModal('addTransaction')">+ New Transaction</button>
+                    </div>
+                </div>
 
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="totalInventory">2,847</div>
+                                <div class="stat-label">Total Inventory Items</div>
+                            </div>
+                            <div class="stat-icon blue">📦</div>
+                        </div>
+                        <div class="stat-change positive">↑ 12% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="totalSales">$124,500</div>
+                                <div class="stat-label">Total Sales (MTD)</div>
+                            </div>
+                            <div class="stat-icon green">💰</div>
+                        </div>
+                        <div class="stat-change positive">↑ 8.5% from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="pendingOrders">23</div>
+                                <div class="stat-label">Pending Orders</div>
+                            </div>
+                            <div class="stat-icon orange">⏳</div>
+                        </div>
+                        <div class="stat-change negative">↓ 3 orders need attention</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="lowStock">8</div>
+                                <div class="stat-label">Low Stock Items</div>
+                            </div>
+                            <div class="stat-icon red">⚠️</div>
+                        </div>
+                        <div class="stat-change negative">Requires immediate action</div>
+                    </div>
+                </div>
 
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                        <button class="btn btn-secondary btn-sm">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Product</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentTransactions">
+                                    <tr>
+                                        <td>#TRX-001</td>
+                                        <td>Dell XPS 15 Laptop</td>
+                                        <td>Sale</td>
+                                        <td>5</td>
+                                        <td>$8,995</td>
+                                        <td>2024-01-15</td>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#TRX-002</td>
+                                        <td>HP LaserJet Pro</td>
+                                        <td>Purchase</td>
+                                        <td>10</td>
+                                        <td>$2,490</td>
+                                        <td>2024-01-14</td>
+                                        <td><span class="badge badge-warning">Pending</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#TRX-003</td>
+                                        <td>Logitech MX Master 3</td>
+                                        <td>Sale</td>
+                                        <td>15</td>
+                                        <td>$1,485</td>
+                                        <td>2024-01-14</td>
+                                        <td><span class="badge badge-success">Completed</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <body id="body">
+            <!-- Inventory Tab -->
+            <div id="inventory" class="tab-content">
+                <div class="header">
+                    <h1 class="page-title">Inventory Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">📥 Export</button>
+                        <button class="btn btn-primary" onclick="openModal('addProduct')">+ Add Product</button>
+                    </div>
+                </div>
 
-		<script>
-			const toggle = () =>{
-				document.getElementById('nav') .classList.toggle('navactive'); 
-			};
-		</script>
+                <div class="search-filter">
+                    <div class="search-box">
+                        <input type="text" class="form-control" placeholder="Search products..." id="searchInventory">
+                    </div>
+                    <select class="form-control" style="width: 150px;">
+                        <option>All Categories</option>
+                        <option>Laptops</option>
+                        <option>Desktops</option>
+                        <option>Peripherals</option>
+                        <option>Networking</option>
+                    </select>
+                    <select class="form-control" style="width: 150px;">
+                        <option>All Status</option>
+                        <option>In Stock</option>
+                        <option>Low Stock</option>
+                        <option>Out of Stock</option>
+                    </select>
+                </div>
 
-	<header class="top">
+                <div class="content-card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Unit Price</th>
+                                    <th>Supplier</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTable">
+                                <tr>
+                                    <td>HW-001</td>
+                                    <td>Dell XPS 15 9520</td>
+                                    <td>Laptops</td>
+                                    <td>24</td>
+                                    <td>$1,799</td>
+                                    <td>Dell Technologies</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary">Edit</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>HW-002</td>
+                                    <td>HP LaserJet Pro M404n</td>
+                                    <td>Printers</td>
+                                    <td>8</td>
+                                    <td>$249</td>
+                                    <td>HP Inc</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary">Edit</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>HW-003</td>
+                                    <td>Cisco Catalyst 9200</td>
+                                    <td>Networking</td>
+                                    <td>3</td>
+                                    <td>$2,850</td>
+                                    <td>Cisco Systems</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-secondary">Edit</button>
+                                        <button class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-	<div class="brand">
-		<span class="fab fa-github"></span>
-		<h1>EPROZ DIGITAL</h1>
-	</div>
-	<span class="fas fa-bars" id="menuIcon" onclick="toggle()"></span>
-	<div class="navbar" id="nav">
-		<div class="searchBox">
-			<input type="text" placeholder="Search here...">
-			<span class="fas fa-search" id="searchIcon"></span>
-		</div>
-		<ul>
-			<li>
-				<i class="fas fa-home"></i>
-				<a href="http://">Home</a>
-			</li>
-			<li>
-				<i class="fa-solid fa-gear"></i>
-				<a href="http://">Services</a>
-			</li>
-			<li>
-				<i class="fas fa-images"></i>
-				<a href="https://eprozdigital.github.io/gallery/">Gallery</a>
-			</li>
-			<li>
-				<i class="fa-solid fa-cart-shopping"></i>
-				<a href="http://">Order</a>
-			</li>
-		</ul>
-	</div>
-    </header>
+            <!-- Procurement Tab -->
+            <div id="procurement" class="tab-content">
+                <div class="header">
+                    <h1 class="page-title">Procurement</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openModal('createPO')">+ Create PO</button>
+                    </div>
+                </div>
 
-        <img class="img-banner" src="1.png" alt="banner">
-        <div class="wrapper">
-            <article class="img-info">
-							<h2>SUPER OFFERS!</h2>
-							<P>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</P> 
-								<P>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</P>
-                </article>
-			<img class="img-me" src="4(1).png" alt="">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchSubTab(this, 'po-list')">Purchase Orders</div>
+                    <div class="tab" onclick="switchSubTab(this, 'suppliers-list')">Suppliers</div>
+                    <div class="tab" onclick="switchSubTab(this, 'quotations')">Quotations</div>
+                </div>
 
+                <div id="po-list" class="sub-tab-content active">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Purchase Orders</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>Supplier</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Order Date</th>
+                                            <th>Expected</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PO-2024-001</td>
+                                            <td>Dell Technologies</td>
+                                            <td>15 Laptops</td>
+                                            <td>$26,985</td>
+                                            <td>2024-01-10</td>
+                                            <td>2024-01-25</td>
+                                            <td><span class="badge badge-warning">In Transit</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>PO-2024-002</td>
+                                            <td>HP Inc</td>
+                                            <td>20 Printers</td>
+                                            <td>$4,980</td>
+                                            <td>2024-01-12</td>
+                                            <td>2024-01-20</td>
+                                            <td><span class="badge badge-success">Received</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Tab -->
+            <div id="sales" class="tab-content">
+                <div class="header">
+                    <h1 class="page-title">Sales Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openModal('createInvoice')">+ New Invoice</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                            <div class="stat-icon blue">📋</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value">$45,230</div>
+                                <div class="stat-label">Revenue This Week</div>
+                            </div>
+                            <div class="stat-icon green">💵</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Pending Invoices</div>
+                            </div>
+                            <div class="stat-icon orange">📝</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Sales Orders</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer</th>
+                                        <th>Products</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Payment</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>SO-2024-089</td>
+                                        <td>TechCorp Solutions</td>
+                                        <td>10x Laptops, 5x Monitors</td>
+                                        <td>$21,450</td>
+                                        <td>2024-01-15</td>
+                                        <td>Paid</td>
+                                        <td><span class="badge badge-success">Shipped</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>SO-2024-090</td>
+                                        <td>Global Systems Inc</td>
+                                        <td>3x Servers</td>
+                                        <td>$18,900</td>
+                                        <td>2024-01-15</td>
+                                        <td>Pending</td>
+                                        <td><span class="badge badge-warning">Processing</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suppliers Tab -->
+            <div id="suppliers" class="tab-content">
+                <div class="header">
+                    <h1 class="page-title">Supplier Management</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openModal('addSupplier')">+ Add Supplier</button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Supplier ID</th>
+                                        <th>Company Name</th>
+                                        <th>Contact</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>SUP-001</td>
+                                        <td>Dell Technologies</td>
+                                        <td>John Smith</td>
+                                        <td>john.smith@dell.com</td>
+                                        <td>+1-800-456-3355</td>
+                                        <td>⭐⭐⭐⭐⭐</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-secondary">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>SUP-002</td>
+                                        <td>HP Inc</td>
+                                        <td>Sarah Johnson</td>
+                                        <td>sarah.j@hp.com</td>
+                                        <td>+1-800-474-6836</td>
+                                        <td>⭐⭐⭐⭐</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-secondary">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <div class="header">
+                    <h1 class="page-title">Reports & Analytics</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">📥 Download PDF</button>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Sales Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                            📊 Chart Visualization Area<br>
+                            <small style="font-size: 0.875rem; opacity: 0.8;">(Integrate Chart.js or similar library here)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Inventory Turnover</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 300px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                            📈 Analytics Dashboard<br>
+                            <small style="font-size: 0.875rem; opacity: 0.8;">(Stock movement analysis)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <!-- Add Product Modal -->
+        <div class="modal" id="addProductModal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Product</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-control" placeholder="HW-XXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" placeholder="Enter product name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-control">
+                                <option>Laptops</option>
+                                <option>Desktops</option>
+                                <option>Printers</option>
+                                <option>Networking</option>
+                                <option>Peripherals</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Supplier</label>
+                            <select class="form-control">
+                                <option>Dell Technologies</option>
+                                <option>HP Inc</option>
+                                <option>Cisco Systems</option>
+                                <option>Lenovo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Unit Price ($)</label>
+                            <input type="number" class="form-control" placeholder="0.00" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Initial Stock</label>
+                            <input type="number" class="form-control" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Product description..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+            </div>
         </div>
-	    
-    </body>
 
+        <!-- Create PO Modal -->
+        <div class="modal hidden" id="createPOModal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Purchase Order</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">Supplier</label>
+                        <select class="form-control">
+                            <option>Select Supplier</option>
+                            <option>Dell Technologies</option>
+                            <option>HP Inc</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expected Delivery Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Items</label>
+                        <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1rem;">
+                            <div class="form-row">
+                                <div class="form-group mb-0">
+                                    <select class="form-control">
+                                        <option>Select Product</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <input type="number" class="form-control" placeholder="Qty">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-4">+ Add Item</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary">Create PO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let currentTab = 'dashboard';
+        let sidebarOpen = false;
+
+        // Tab Navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            currentTab = tabName;
+            
+            // Close sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Sub-tab switching
+        function switchSubTab(element, contentId) {
+            // Update tab styles
+            element.parentElement.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Show content (simplified for demo)
+            console.log('Switched to:', contentId);
+        }
+
+        // Sidebar Toggle for Mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            sidebarOpen = !sidebarOpen;
+        }
+
+        // Modal Functions
+        function openModal(type) {
+            const overlay = document.getElementById('modalOverlay');
+            const modals = overlay.querySelectorAll('.modal');
+            
+            modals.forEach(modal => modal.classList.add('hidden'));
+            
+            if (type === 'addProduct') {
+                document.getElementById('addProductModal').classList.remove('hidden');
+            } else if (type === 'createPO') {
+                document.getElementById('createPOModal').classList.remove('hidden');
+            }
+            
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (event && event.target !== document.getElementById('modalOverlay')) {
+                return;
+            }
+            
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Form Submissions
+        function saveProduct() {
+            const form = document.getElementById('productForm');
+            if (form.checkValidity()) {
+                // Simulate API call
+                showNotification('Product saved successfully!', 'success');
+                closeModal();
+                refreshData();
+            } else {
+                form.reportValidity();
+            }
+        }
+
+        // Data Refresh Simulation
+        function refreshData() {
+            // Add loading state
+            document.querySelectorAll('.stat-value').forEach(el => {
+                el.style.opacity = '0.5';
+            });
+            
+            setTimeout(() => {
+                // Simulate data update
+                document.getElementById('totalInventory').textContent = 
+                    Math.floor(Math.random() * 1000 + 2000).toLocaleString();
+                document.getElementById('totalSales').textContent = 
+                    '$' + Math.floor(Math.random() * 50000 + 100000).toLocaleString();
+                
+                document.querySelectorAll('.stat-value').forEach(el => {
+                    el.style.opacity = '1';
+                });
+                
+                showNotification('Data refreshed successfully!', 'success');
+            }, 800);
+        }
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 3000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Search Functionality
+        document.getElementById('searchInventory')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#inventoryTable tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Responsive Chart Resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && sidebarOpen) {
+                document.getElementById('sidebar').classList.remove('active');
+                sidebarOpen = false;
+            }
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            // ESC to close modal
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            
+            // Ctrl/Cmd + K for search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('searchInventory')?.focus();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            console.log('Hardware Inventory System initialized');
+        });
+
+        // PHP Integration Points (Commented)
+        /*
+        // Example PHP endpoints that would connect to this frontend:
+        
+        // 1. GET /api/inventory.php
+        // Returns: JSON array of inventory items
+        
+        // 2. POST /api/products.php
+        // Body: {sku, name, category, price, stock}
+        // Returns: {success: true, id: 123}
+        
+        // 3. GET /api/sales.php?period=month
+        // Returns: Sales data for charts
+        
+        // 4. POST /api/purchase-orders.php
+        // Body: {supplier_id, items[], delivery_date}
+        
+        // Database Schema would include:
+        // - products (id, sku, name, category_id, supplier_id, price, stock, created_at)
+        // - suppliers (id, name, contact, email, phone, rating)
+        // - purchase_orders (id, po_number, supplier_id, total, status, created_at)
+        // - sales_orders (id, order_number, customer_id, total, status, created_at)
+        // - transactions (id, type, product_id, quantity, amount, date)
+        */
+    </script>
+</body>
 </html>
-
