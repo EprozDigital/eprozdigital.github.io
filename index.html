@@ -607,22 +607,20 @@
   import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBr4RFPVR1OIkAFL11QxTlOWx8eTxZx_L8",
+    apiKey: "AIzaSy...",
     authDomain: "eproz-digital.firebaseapp.com",
     projectId: "eproz-digital",
-    storageBucket: "eproz-digital.firebasestorage.app",
-    messagingSenderId: "596712422898",
-    appId: "1:596712422898:web:ac4a7dfaf09fd6933aff6b",
-    measurementId: "G-FB4VEDV50R"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // MAKE DB GLOBAL
+  // ✅ MAKE EVERYTHING GLOBAL
   window.db = db;
   window.addDoc = addDoc;
   window.collection = collection;
+
+  console.log("Firebase connected");
 </script>
 
    
