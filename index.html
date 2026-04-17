@@ -603,14 +603,9 @@
 </head>
 
 <script type="module">
-  // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyBr4RFPVR1OIkAFL11QxTlOWx8eTxZx_L8",
     authDomain: "eproz-digital.firebaseapp.com",
@@ -621,9 +616,13 @@
     measurementId: "G-FB4VEDV50R"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  // MAKE DB GLOBAL
+  window.db = db;
+  window.addDoc = addDoc;
+  window.collection = collection;
 </script>
 
    
@@ -1683,28 +1682,67 @@
         }
 
         // Form Submissions
-        function saveTransaction() {
-            const form = document.getElementById('transactionForm');
-            if (form.checkValidity()) {
-                showNotification('Transaction saved successfully!', 'success');
-                closeModal();
-                refreshData();
-            } else {
-                form.reportValidity();
-            }
+        async function saveTransaction() {
+    const form = document.getElementById('transactionForm');
+
+    if (form.checkValidity()) {
+        const data = {
+            type: document.getElementById('trxType').value,
+            date: document.getElementById('trxDate').value,
+            ref: document.getElementById('trxRef').value,
+            party: document.getElementById('trxParty').value,
+            total: document.getElementById('trxTotal').value,
+            createdAt: new Date()
+        };
+
+        try {
+            await window.addDoc(window.collection(window.db, "transactions"), data);
+
+            showNotification('Transaction saved to Firebase!', 'success');
+            closeModal();
+        } catch (error) {
+            console.error(error);
+            showNotification('Error saving transaction', 'danger');
         }
 
-        function saveProduct() {
-            const form = document.getElementById('productForm');
-            if (form.checkValidity()) {
-                showNotification('Product added successfully!', 'success');
-                closeModal();
-                refreshData();
-            } else {
-                form.reportValidity();
-            }
+    } else {
+        form.reportValidity();
+    }
+}
+
+        
+        async function saveProduct() {
+    const form = document.getElementById('productForm');
+
+    if (form.checkValidity()) {
+        const inputs = form.querySelectorAll('input, select');
+
+        const productData = {
+            sku: inputs[0].value,
+            name: inputs[1].value,
+            category: inputs[2].value,
+            supplier: inputs[3].value,
+            price: inputs[4].value,
+            stock: inputs[5].value,
+            createdAt: new Date()
+        };
+
+        try {
+            await window.addDoc(window.collection(window.db, "products"), productData);
+
+            showNotification('Product saved to Firebase!', 'success');
+            closeModal();
+        } catch (error) {
+            console.error(error);
+            showNotification('Error saving product', 'danger');
         }
 
+    } else {
+        form.reportValidity();
+    }
+}
+
+        
         function savePO() {
             const form = document.getElementById('poForm');
             if (form.checkValidity()) {
